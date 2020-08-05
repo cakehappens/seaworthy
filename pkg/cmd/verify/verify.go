@@ -10,6 +10,7 @@ import (
 	"github.com/theckman/yacspin"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"time"
+	"github.com/gookit/color"
 )
 
 func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra.Command {
@@ -27,7 +28,7 @@ func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra
 					close(resourceChan)
 					close(errChan)
 				}()
-				resources, err := rgetter.Get(cmd.Context(), func(opt *kubernetes.GetOptions) {
+				resources, err := rgetter.GetResources(cmd.Context(), func(opt *kubernetes.GetResourceOptions) {
 					opt.Type = args[0]
 				})
 
@@ -39,11 +40,11 @@ func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra
 				Frequency:         100 * time.Millisecond,
 				Writer:            streams.ErrOut,
 				CharSet:           yacspin.CharSets[14],
-				Message:           " Getting data from k8s",
-				StopMessage:       " Data retrieved from K8s",
+				Message:           "Getting data from k8s",
+				StopMessage:       "Data retrieved from K8s",
 				StopCharacter:     "✓ ",
 				StopColors:        []string{"fgGreen"},
-				StopFailMessage:   " Failed getting data from K9s",
+				StopFailMessage:   "Failed getting data from K9s",
 				StopFailCharacter: "X ",
 				StopFailColors:    []string{"fgRed"},
 			}
@@ -63,22 +64,24 @@ func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra
 				spinner.Stop()
 			}
 
+			const resultMessageFormat = "%s %s: %s - %s\n"
+
 			for _, r := range resources {
 				status := health.ResourceHealth(r)
 
 				switch code := status.Code; code {
 				case health.Healthy:
-					fmt.Fprintf(streams.Out, "✔️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, color.Green.Sprint("✓"), r.GetName(), code, status.Message)
 				case health.Progressing:
-					fmt.Fprintf(streams.Out, "🔄️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat,"🔄️ ", r.GetName(), code, status.Message)
 				case health.Unsupported:
-					fmt.Fprintf(streams.Out, "⚠️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, "⚠️ ", r.GetName(), code, status.Message)
 				case health.Unknown:
-					fmt.Fprintf(streams.Out, "?️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, "?️ ", r.GetName(), code, status.Message)
 				case health.Degraded:
-					fmt.Fprintf(streams.Out, "🔻️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, "🔻️ ", r.GetName(), code, status.Message)
 				case health.Missing:
-					fmt.Fprintf(streams.Out, "👤️  %s: %s - %s\n", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, "👤️ ", r.GetName(), code, status.Message)
 				default:
 					panic(errors.New(fmt.Sprintf("unknown status code: %s", code)))
 				}

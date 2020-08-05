@@ -1,7 +1,3 @@
-# 
-
-
-
 <h1 align="center">
   <br>
   <a href="http://github.com/cakehappens/seaworthy"><img src="./assets/036-yacht.svg" alt="seaworthy" width="200px" /></a>
@@ -48,6 +44,12 @@
 ## 👋 Introduction
 
 `Seaworthy` is your post-apply validation that your K8s resources deployed correctly and are healthy.
+
+<p align="center">
+  <a href="https://asciinema.org/a/rQiNNFKIL5N5R4E3JUrjVQ6s7">
+    <img src="https://asciinema.org/a/rQiNNFKIL5N5R4E3JUrjVQ6s7.svg">
+  </a>
+</p>
 
 ## ⚡️ Install
 

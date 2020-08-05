@@ -30,22 +30,23 @@ const (
 	IngressKind = "Ingress"
 )
 
-func IngressHealth(obj unstructured.Unstructured) (hstatus health.Status, err error) {
+func IngressHealth(obj unstructured.Unstructured) (health.Status, error) {
 	ingress := &extv1beta1.Ingress{}
-	err = scheme.Scheme.Convert(&obj, ingress, nil)
+	err := scheme.Scheme.Convert(&obj, ingress, nil)
 	if err != nil {
 		err = fmt.Errorf("failed to convert %T to %T: %v", obj, ingress, err)
-		return
+		return health.Status{
+			Code: health.Unknown,
+			Message: err.Error(),
+		}, err
 	}
 
 	if len(ingress.Status.LoadBalancer.Ingress) <= 0 {
-		hstatus = health.Status{
+		return health.Status{
 			Code:    health.Progressing,
 			Message: "Working on it...",
-		}
-		return
+		}, nil
 	}
 
-	hstatus = health.NewHealthyHealthStatus()
-	return
+	return health.NewHealthyHealthStatus(), nil
 }

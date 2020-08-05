@@ -8,7 +8,7 @@ import (
 	cmdverify "github.com/cakehappens/seaworthy/pkg/cmd/verify"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes"
 	"github.com/cakehappens/seaworthy/pkg/util/templates"
-	"github.com/fatih/color"
+	"github.com/gookit/color"
 	"github.com/oklog/run"
 	"github.com/spf13/cobra"
 	"io"
@@ -35,7 +35,8 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
 			fmt.Printf("running: %s\n", args)
 
-			color.New(color.FgGreen).Fprintln(os.Stderr, "Done!")
+
+			fmt.Fprintln(os.Stderr, color.New(color.FgGreen).Sprint("Done!"))
 			return nil
 		},
 	}
