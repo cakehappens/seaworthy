@@ -6,7 +6,10 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-type GetResourceOptions struct {
+// resourcer describes how to get the resources args and then returns the resources as unstructured objects
+type rawResourcer func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error)
+
+type ResourcerOptions struct {
 	// Name corresponds to `NAME` within `kubectl get TYPE NAME`
 	// Cannot be combined with Filename option
 	Name string
@@ -31,9 +34,11 @@ type GetResourceOptions struct {
 	// related manifests organized within the same directory.
 	// Only valid when using the Filename Option
 	Recursive bool
+
+	rawResourcer
 }
 
-func (opts *GetResourceOptions) ToArgs() []string {
+func (opts *ResourcerOptions) GetCmdArgs() []string {
 	var args []string
 
 	if len(opts.Type) > 0 {
@@ -66,17 +71,14 @@ func (opts *GetResourceOptions) ToArgs() []string {
 	return args
 }
 
-type GetResourceOption func(opt *GetResourceOptions)
+type ResourcerOption func(opt *ResourcerOptions)
 
-type ResourceGetter interface {
-	GetResources(ctx context.Context, options ...GetResourceOption) ([]unstructured.Unstructured, error)
+type Resourcer func(ctx context.Context, options ...ResourcerOption) ([]unstructured.Unstructured, error)
+
+type EventerOptions struct {
+	rawResourcer
 }
 
-type EventGetter interface {
-	GetEvents(ctx context.Context, resource unstructured.Unstructured) ([]corev1.Event, error)
-}
+type EventerOption func(option *EventerOptions)
 
-type Client interface {
-	ResourceGetter
-	EventGetter
-}
+type Eventer func(ctx context.Context, resource unstructured.Unstructured, options ...EventerOption) ([]corev1.Event, error)

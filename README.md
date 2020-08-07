@@ -17,9 +17,6 @@
   </a>
   <img src="https://img.shields.io/github/go-mod/go-version/cakehappens/seaworthy">
   <br />
-  <a href="./docs/tanka.md">
-    <img src="https://img.shields.io/badge/tanka-ready-orange.svg">
-  </a>
   <a href="https://saythanks.io/to/ghostsquad">
     <img src="https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg">
   </a>

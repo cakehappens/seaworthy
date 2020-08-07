@@ -13,7 +13,7 @@ import (
 	"github.com/gookit/color"
 )
 
-func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra.Command {
+func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "verify (-f FILENAME | TYPE [NAME])",
 		Short: "verify",
@@ -28,7 +28,7 @@ func New(streams clioptions.IOStreams, rgetter kubernetes.ResourceGetter) *cobra
 					close(resourceChan)
 					close(errChan)
 				}()
-				resources, err := rgetter.GetResources(cmd.Context(), func(opt *kubernetes.GetResourceOptions) {
+				resources, err := resourcer(cmd.Context(), func(opt *kubernetes.ResourcerOptions) {
 					opt.Type = args[0]
 				})
 

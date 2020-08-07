@@ -6,14 +6,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"strings"
 )
-
-type RunState struct {
-	RunError error
-	Ran      bool
-	*os.ProcessState
-}
 
 type RunOptions struct {
 	Args   []string
@@ -31,28 +24,19 @@ type RunOption func(o *RunOptions)
 // all environment variables are passed to subprocess
 // additionally, you may add vars to RunOptions.Env
 //
-// RunState is passed to the channel as soon as cmd.Start is called
-// StartErr is the error returned from cmd.Start() https://golang.org/pkg/os/exec/#Cmd.Start
-// WaitErr is the error from cmd.Wait() https://golang.org/pkg/os/exec/#Cmd.Wait
-func Run(ctx context.Context, cmd string, options ...RunOption) *RunState {
+// Returns the exitCode and error
+// The error turned will only be non-nil if the process failed to start for some reason
+func Run(ctx context.Context, cmd string, options ...RunOption) (int, error) {
 	runOpts := &RunOptions{}
 
 	runOpts.Env = make(map[string]string)
-
-	for _, item := range os.Environ() {
-		split := strings.SplitN(item, "=", 2)
-		runOpts.Env[split[0]] = split[1]
-	}
 
 	for _, optFn := range options {
 		optFn(runOpts)
 	}
 
-	if runOpts.Args == nil {
-		runOpts.Args = make([]string, 0)
-	}
-
-	cmdEnv := make([]string, len(runOpts.Env))
+	cmdEnv := make([]string, len(runOpts.Env) + len(os.Environ()))
+	cmdEnv = append(cmdEnv, os.Environ()...)
 
 	for k, v := range runOpts.Env {
 		cmdEnv = append(cmdEnv, fmt.Sprintf("%s=%s", k, v))
@@ -67,16 +51,15 @@ func Run(ctx context.Context, cmd string, options ...RunOption) *RunState {
 	c.Stderr = runOpts.Stderr
 	c.Stdin = runOpts.Stdin
 
-	runState := &RunState{}
+	err := c.Run()
 
-	runState.RunError = c.Run()
-	runState.ProcessState = c.ProcessState
-
-	if runState.RunError == nil {
-		runState.Ran = true
-	} else if _, ok := runState.RunError.(*exec.ExitError); ok {
-		runState.Ran = true
+	if err != nil {
+		if _, ok := err.(*exec.ExitError); ok {
+			return c.ProcessState.ExitCode(), nil
+		}
 	}
 
-	return runState
+	return c.ProcessState.ExitCode(), err
 }
+
+type CmdRunner func (ctx context.Context, cmd string, options ...RunOption) (int, error)

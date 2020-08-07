@@ -41,14 +41,12 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 		},
 	}
 
-	client := kubernetes.NewKubectl()
-
 	ioStreams := clioptions.IOStreams{In: in, Out: out, ErrOut: err}
 	groups := templates.CommandGroups{
 		{
 			Message: "Basic Commands (Beginner):",
 			Commands: []*cobra.Command{
-				cmdverify.New(ioStreams, client),
+				cmdverify.New(ioStreams, kubernetes.GetResources),
 			},
 		},
 	}

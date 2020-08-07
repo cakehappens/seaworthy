@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  generation: 4
+  name: guestbook-ui
+  namespace: default
+  resourceVersion: "12819"
+  uid: bb9af0c7-8a44-11e8-9e23-42010aa80010
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guestbook-ui
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: guestbook-ui
+    spec:
+      containers:
+        - image: gcr.io/heptio-images/ks-guestbook-demo:0.3
+          name: guestbook-ui
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 2
+  conditions:
+    - lastTransitionTime: "2020-08-05T03:32:12Z"
+      lastUpdateTime: "2020-08-05T03:32:12Z"
+      message: ReplicaSet "web-6fcd66fd86" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2020-08-05T21:56:49Z"
+      lastUpdateTime: "2020-08-05T21:56:49Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+  observedGeneration: 8
+  readyReplicas: 2
+  replicas: 2
+  updatedReplicas: 2

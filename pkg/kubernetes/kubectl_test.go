@@ -2,57 +2,48 @@ package kubernetes
 
 import (
 	"context"
+	"github.com/cakehappens/seaworthy/pkg/util/sh"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"reflect"
 	"testing"
 )
 
-func TestGetOptions_ToArgs(t *testing.T) {
-	type fields struct {
-		Name           string
-		Type           string
-		Namespace      string
-		Selector       string
-		Filename       string
-		Recursive      bool
-		IgnoreNotFound bool
+func TestGetEvents(t *testing.T) {
+	type args struct {
+		ctx         context.Context
+		resourceUid string
+		options     []EventerOption
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   []string
+		name    string
+		args    args
+		want    []corev1.Event
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			opts := &GetOptions{
-				Name:           tt.fields.Name,
-				Type:           tt.fields.Type,
-				Namespace:      tt.fields.Namespace,
-				Selector:       tt.fields.Selector,
-				Filename:       tt.fields.Filename,
-				Recursive:      tt.fields.Recursive,
-				IgnoreNotFound: tt.fields.IgnoreNotFound,
+			got, err := GetEvents(tt.args.ctx, tt.args.resourceUid, tt.args.options...)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetEvents() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
-			if got := opts.ToArgs(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ToArgs() = %v, want %v", got, tt.want)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetEvents() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKubectl_Get(t *testing.T) {
-	type fields struct {
-		Binary string
-	}
+func TestGetResources(t *testing.T) {
 	type args struct {
 		ctx     context.Context
-		options []GetOption
+		options []ResourcerOption
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    []unstructured.Unstructured
 		wantErr bool
@@ -61,74 +52,94 @@ func TestKubectl_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			k := &Kubectl{
-				Binary: tt.fields.Binary,
-			}
-			got, err := k.Get(tt.args.ctx, tt.args.options...)
+			got, err := GetResources(tt.args.ctx, tt.args.options...)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetResources() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Get() got = %v, want %v", got, tt.want)
+				t.Errorf("GetResources() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestKubectl_run(t *testing.T) {
-	type fields struct {
-		Binary string
-	}
+func TestKubeCtlRawResourcer(t *testing.T) {
 	type args struct {
 		ctx  context.Context
 		args []string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
-		want    string
-		want1   string
+		want    []unstructured.Unstructured
 		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			k := &Kubectl{
-				Binary: tt.fields.Binary,
-			}
-			got, got1, err := k.run(tt.args.ctx, tt.args.args...)
+			got, err := KubeCtlRawResourcer(tt.args.ctx, tt.args.args...)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("run() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("KubeCtlRawResourcer() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got != tt.want {
-				t.Errorf("run() got = %v, want %v", got, tt.want)
-			}
-			if got1 != tt.want1 {
-				t.Errorf("run() got1 = %v, want %v", got1, tt.want1)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("KubeCtlRawResourcer() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestNewKubectl(t *testing.T) {
+func Test_kubectlRawResourcer(t *testing.T) {
 	type args struct {
-		options []KubectlOption
+		ctx       context.Context
+		cmdRunner sh.CmdRunner
+		args      []string
 	}
 	tests := []struct {
-		name string
-		args args
-		want *Kubectl
+		name    string
+		args    args
+		want    []unstructured.Unstructured
+		wantErr bool
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewKubectl(tt.args.options...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewKubectl() = %v, want %v", got, tt.want)
+			got, err := kubectlRawResourcer(tt.args.ctx, tt.args.cmdRunner, tt.args.args...)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("kubectlRawResourcer() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("kubectlRawResourcer() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_resourcesFromBytes(t *testing.T) {
+	type args struct {
+		b []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    []unstructured.Unstructured
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := resourcesFromBytes(tt.args.b)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("resourcesFromBytes() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("resourcesFromBytes() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
