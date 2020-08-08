@@ -1,8 +1,6 @@
 package clioptions
 
-import (
-
-)
+import ()
 
 type CommandOptions struct {
 	IOStreams

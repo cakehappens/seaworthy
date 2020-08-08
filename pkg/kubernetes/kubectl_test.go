@@ -3,6 +3,7 @@ package kubernetes
 import (
 	"context"
 	"github.com/cakehappens/seaworthy/pkg/util/sh"
+	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"reflect"
@@ -10,18 +11,53 @@ import (
 )
 
 func TestGetEvents(t *testing.T) {
+	t.Run("valid args provided", func(t *testing.T) {
+		expectedUid := "abc123"
+		expectedArgs := []string{
+			"get",
+			"events",
+			"--field-selector",
+			"involvedObject.uid=abc123",
+			"--sort-by",
+			"lastTimestamp",
+			"--output",
+			"json",
+		}
+
+		_, _ = GetEvents(context.Background(), expectedUid, func(option *EventerOptions) {
+			option.rawResourcer = func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
+				assert.Equal(t, expectedArgs, args)
+				return nil, nil
+			}
+		})
+	})
+
 	type args struct {
 		ctx         context.Context
 		resourceUid string
 		options     []EventerOption
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    []corev1.Event
-		wantErr bool
+		name        string
+		args        args
+		want        []corev1.Event
+		wantErr     bool
+		argAsserter func(t *testing.T, expected, actual []string)
 	}{
-		// TODO: Add test cases.
+		{
+			name: "blah",
+			args: args{
+				ctx:         context.Background(),
+				resourceUid: "abc123",
+				options: []EventerOption{
+					func(option *EventerOptions) {
+						option.rawResourcer = func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
+							return nil, nil
+						}
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

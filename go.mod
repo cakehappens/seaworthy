@@ -13,6 +13,7 @@ require (
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.4.0
+	github.com/stretchr/testify v1.4.1-0.20200129000828-ea72eb91592e
 	github.com/theckman/yacspin v0.8.0
 	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c
 	k8s.io/api v0.18.6

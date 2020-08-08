@@ -35,7 +35,6 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
 			fmt.Printf("running: %s\n", args)
 
-
 			fmt.Fprintln(os.Stderr, color.New(color.FgGreen).Sprint("Done!"))
 			return nil
 		},

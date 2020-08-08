@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	FlagDryRun = "dry-run"
-	FlagContext = "context"
+	FlagDryRun         = "dry-run"
+	FlagContext        = "context"
 	FlagKubeConfigFile = "kubeconfig"
-	FlagVerbosity = "verbose"
+	FlagVerbosity      = "verbose"
 )
 
 func BindGlobalFlags(v *viper.Viper, flags *pflag.FlagSet) {

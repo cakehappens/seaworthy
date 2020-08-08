@@ -38,7 +38,7 @@ func DeploymentHealth(obj unstructured.Unstructured) (health.Status, error) {
 	if err != nil {
 		err = fmt.Errorf("failed to convert %T to %T: %w", obj, deployment, err)
 		return health.Status{
-			Code: health.Unknown,
+			Code:    health.Unknown,
 			Message: err.Error(),
 		}, err
 	}

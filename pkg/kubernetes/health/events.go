@@ -15,7 +15,7 @@ const (
 func TrailingWarningEvent(events []corev1.Event) []corev1.Event {
 	var warningEvents []corev1.Event
 
-	for i := len(events)-1; i >= 0; i-- {
+	for i := len(events) - 1; i >= 0; i-- {
 		e := events[i]
 		if e.Type == EventTypeWarning {
 			warningEvents = append(warningEvents, e)

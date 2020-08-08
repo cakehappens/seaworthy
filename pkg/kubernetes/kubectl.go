@@ -22,7 +22,7 @@ func resourcesFromBytes(b []byte) ([]unstructured.Unstructured, error) {
 	err := obj.UnmarshalJSON(b)
 
 	if err != nil {
-		if  err != io.EOF {
+		if err != io.EOF {
 			err = fmt.Errorf("json unmarshal: %w", err)
 			return nil, fmt.Errorf(resourcesFromBytesErrorFmt, err)
 		}

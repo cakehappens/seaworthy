@@ -35,7 +35,7 @@ func Run(ctx context.Context, cmd string, options ...RunOption) (int, error) {
 		optFn(runOpts)
 	}
 
-	cmdEnv := make([]string, len(runOpts.Env) + len(os.Environ()))
+	cmdEnv := make([]string, len(runOpts.Env)+len(os.Environ()))
 	cmdEnv = append(cmdEnv, os.Environ()...)
 
 	for k, v := range runOpts.Env {
@@ -62,4 +62,4 @@ func Run(ctx context.Context, cmd string, options ...RunOption) (int, error) {
 	return c.ProcessState.ExitCode(), err
 }
 
-type CmdRunner func (ctx context.Context, cmd string, options ...RunOption) (int, error)
+type CmdRunner func(ctx context.Context, cmd string, options ...RunOption) (int, error)

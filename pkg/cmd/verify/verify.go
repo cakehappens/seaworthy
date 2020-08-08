@@ -6,16 +6,16 @@ import (
 	"github.com/cakehappens/seaworthy/pkg/clioptions"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
+	"github.com/gookit/color"
 	"github.com/spf13/cobra"
 	"github.com/theckman/yacspin"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"time"
-	"github.com/gookit/color"
 )
 
 func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "verify (-f FILENAME | TYPE [NAME])",
+		Use:   "verify (-f FILENAME | TYPE [NAME])",
 		Short: "verify",
 		Run: func(cmd *cobra.Command, args []string) {
 			var err error
@@ -53,8 +53,8 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 
 			spinner.Start()
 
-			err = <- errChan
-			resources := <- resourceChan
+			err = <-errChan
+			resources := <-resourceChan
 
 			if err != nil {
 				spinner.StopFail()
@@ -73,7 +73,7 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 				case health.Healthy:
 					fmt.Fprintf(streams.Out, resultMessageFormat, color.Green.Sprint("✓"), r.GetName(), code, status.Message)
 				case health.Progressing:
-					fmt.Fprintf(streams.Out, resultMessageFormat,"🔄️ ", r.GetName(), code, status.Message)
+					fmt.Fprintf(streams.Out, resultMessageFormat, "🔄️ ", r.GetName(), code, status.Message)
 				case health.Unsupported:
 					fmt.Fprintf(streams.Out, resultMessageFormat, "⚠️ ", r.GetName(), code, status.Message)
 				case health.Unknown:

@@ -8,9 +8,12 @@
 
 <h4 align="center">Post-apply check to verify your K8s resources are <i>Seaworthy</i></h4>
 
-<p align="center">
-  <a href="https://github.com/cakehappens/seaworthy/releases/">
+<a align="center">
+  <!-- <a href="https://github.com/cakehappens/seaworthy/releases/">
     <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg">
+  </a> -->
+  <a href="">
+    <img src="https://github.com/cakehappens/seaworthy/workflows/test/badge.svg">
   </a>
   <a href="https://pkg.go.dev/github.com/cakehappens/seaworthy">
     <img src="https://img.shields.io/badge/godoc-reference-5272B4.svg">
