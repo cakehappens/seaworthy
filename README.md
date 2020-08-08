@@ -12,8 +12,8 @@
   <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg">
 </a> -->
 
-<a align="center">
-  <a href="">
+<p align="center">
+  <a href="https://github.com/cakehappens/seaworthy/actions">
     <img src="https://github.com/cakehappens/seaworthy/workflows/test/badge.svg">
   </a>
   <a href="https://pkg.go.dev/github.com/cakehappens/seaworthy">
