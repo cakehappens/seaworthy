@@ -47,8 +47,6 @@ func Run(ctx context.Context, cmd string, options ...RunOption) (int, error) {
 	c := exec.CommandContext(ctx, cmd, runOpts.Args...)
 	c.Env = cmdEnv
 
-	// fmt.Printf("cmd: %s %s\n", cmd, strings.Join(runOpts.Args, " "))
-
 	c.Stdout = runOpts.Stdout
 	c.Stderr = runOpts.Stderr
 	c.Stdin = runOpts.Stdin

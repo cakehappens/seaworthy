@@ -6,7 +6,7 @@ import (
 )
 
 // NewTestIOStreams returns a valid IOStreams and in, out, errout buffers for unit tests
-func NewTestIOStreams() (IOStreams, *bytes.Buffer, *bytes.Buffer, *bytes.Buffer) {
+func NewTestIOStreams() IOStreams {
 	in := &bytes.Buffer{}
 	out := &bytes.Buffer{}
 	errOut := &bytes.Buffer{}
@@ -15,7 +15,7 @@ func NewTestIOStreams() (IOStreams, *bytes.Buffer, *bytes.Buffer, *bytes.Buffer)
 		In:     in,
 		Out:    out,
 		ErrOut: errOut,
-	}, in, out, errOut
+	}
 }
 
 // NewTestIOStreamsDiscard returns a valid IOStreams that just discards

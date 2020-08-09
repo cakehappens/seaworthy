@@ -123,15 +123,15 @@ func GetCodeOrder() []StatusCode {
 	return codeOrder
 }
 
-// IsWorse returns whether or not the new health status code is a worser condition than the current
-func IsWorse(current, new StatusCode) bool {
+// IsWorse returns whether or not the new health status code is a worse condition than the current
+func IsWorse(current, latest StatusCode) bool {
 	currentIndex := 0
 	newIndex := 0
 	for i, code := range codeOrder {
 		if current == code {
 			currentIndex = i
 		}
-		if new == code {
+		if latest == code {
 			newIndex = i
 		}
 	}

@@ -37,16 +37,22 @@ func (m *MultiError) Return() error {
 	return nil
 }
 
+const (
+	noErrors       = 0
+	singleError    = 1
+	exactly2Errors = 2
+)
+
 // Error returns a human readable string indicating the number of errors that are contained
 // but no specifics on the actual errors
 // TODO: make it work like error wrapping
 func (m MultiError) Error() string {
 	switch len(m.errs) {
-	case 0:
+	case noErrors:
 		return "(0 errors)"
-	case 1:
+	case singleError:
 		return m.errs[0].Error()
-	case 2:
+	case exactly2Errors:
 		return m.errs[0].Error() + " (and 1 other error)"
 	default:
 		return fmt.Sprintf("%s (and %d other errors)",

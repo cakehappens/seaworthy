@@ -53,18 +53,15 @@ func (opts *ResourcerOptions) GetCmdArgs() []string {
 	}
 
 	if len(opts.Namespace) > 0 {
-		args = append(args, "--namespace")
-		args = append(args, opts.Namespace)
+		args = append(args, "--namespace", opts.Namespace)
 	}
 
 	if len(opts.Selector) > 0 {
-		args = append(args, "--selector")
-		args = append(args, opts.Selector)
+		args = append(args, "--selector", opts.Selector)
 	}
 
 	if len(opts.Filename) > 0 {
-		args = append(args, "--filename")
-		args = append(args, opts.Filename)
+		args = append(args, "--filename", opts.Filename)
 	}
 
 	if opts.Recursive {

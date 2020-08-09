@@ -51,7 +51,8 @@ func WarningEventsLessThanAge(events []corev1.Event, dur time.Duration, options 
 
 	var warningEvents []corev1.Event
 
-	for _, e := range events {
+	for i := range events {
+		e := events[i]
 		if e.Type == EventTypeWarning {
 			diff := now.Sub(e.LastTimestamp.Time)
 

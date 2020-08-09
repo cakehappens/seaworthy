@@ -144,8 +144,8 @@ func (t *templater) templateFuncs(exposedFlags ...string) template.FuncMap {
 			exposed := flag.NewFlagSet("exposed", flag.ContinueOnError)
 			if len(exposedFlags) > 0 {
 				for _, name := range exposedFlags {
-					if flag := c.Flags().Lookup(name); flag != nil {
-						exposed.AddFlag(flag)
+					if fl := c.Flags().Lookup(name); fl != nil {
+						exposed.AddFlag(fl)
 					}
 				}
 			}
@@ -258,8 +258,8 @@ func flagsUsages(f *flag.FlagSet) string {
 }
 
 func rpad(s string, padding int) string {
-	template := fmt.Sprintf("%%-%ds", padding)
-	return fmt.Sprintf(template, s)
+	tmpl := fmt.Sprintf("%%-%ds", padding)
+	return fmt.Sprintf(tmpl, s)
 }
 
 func appendIfNotPresent(s, stringToAppend string) string {
@@ -269,7 +269,7 @@ func appendIfNotPresent(s, stringToAppend string) string {
 	return s + " " + stringToAppend
 }
 
-func flagsNotIntersected(l *flag.FlagSet, r *flag.FlagSet) *flag.FlagSet {
+func flagsNotIntersected(l, r *flag.FlagSet) *flag.FlagSet {
 	f := flag.NewFlagSet("notIntersected", flag.ContinueOnError)
 	l.VisitAll(func(flag *flag.Flag) {
 		if r.Lookup(flag.Name) == nil {

@@ -8,13 +8,14 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gookit/color"
+	"github.com/oklog/run"
+	"github.com/spf13/cobra"
+
 	"github.com/cakehappens/seaworthy/pkg/clioptions"
 	cmdverify "github.com/cakehappens/seaworthy/pkg/cmd/verify"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes"
 	"github.com/cakehappens/seaworthy/pkg/util/templates"
-	"github.com/gookit/color"
-	"github.com/oklog/run"
-	"github.com/spf13/cobra"
 
 	// registers health checks
 	_ "github.com/cakehappens/seaworthy/pkg/kubernetes/health/install"
@@ -28,7 +29,7 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 		Use: binaryName,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) == 0 {
-				runHelp(cmd, args)
+				_ = cmd.Help()
 				return nil
 			}
 
@@ -56,10 +57,6 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 	return cmd
 }
 
-func runHelp(cmd *cobra.Command, args []string) {
-	cmd.Help()
-}
-
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -72,15 +69,14 @@ func main() {
 				close(cancelInterrupt)
 			})
 	}
-	{
-		runGroup.Add(func() error {
-			rootC := NewSeaworthyCommand(os.Stdin, os.Stdout, os.Stderr)
-			rootC.SetArgs(os.Args[1:])
-			return rootC.ExecuteContext(ctx)
-		}, func(error) {
-			cancel()
-		})
-	}
+
+	runGroup.Add(func() error {
+		rootC := NewSeaworthyCommand(os.Stdin, os.Stdout, os.Stderr)
+		rootC.SetArgs(os.Args[1:])
+		return rootC.ExecuteContext(ctx)
+	}, func(error) {
+		cancel()
+	})
 
 	err := runGroup.Run()
 	if err != nil {

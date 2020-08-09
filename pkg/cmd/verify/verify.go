@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cakehappens/seaworthy/pkg/clioptions"
-	"github.com/cakehappens/seaworthy/pkg/kubernetes"
-	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	"github.com/gookit/color"
 	"github.com/spf13/cobra"
 	"github.com/theckman/yacspin"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	"github.com/cakehappens/seaworthy/pkg/clioptions"
+	"github.com/cakehappens/seaworthy/pkg/kubernetes"
+	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 )
 
 // New creates a new Verify cobra command
@@ -19,8 +20,6 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 		Use:   "verify (-f FILENAME | TYPE [NAME])",
 		Short: "verify",
 		Run: func(cmd *cobra.Command, args []string) {
-			var err error
-
 			resourceChan := make(chan []unstructured.Unstructured, 1)
 			errChan := make(chan error, 1)
 
@@ -83,6 +82,8 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "?️ ", r.GetName(), code, status.Message)
 				case health.Degraded:
 					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "🔻️ ", r.GetName(), code, status.Message)
+				case health.Suspended:
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "⏸️ ", r.GetName(), code, status.Message)
 				case health.Missing:
 					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "👤️ ", r.GetName(), code, status.Message)
 				default:

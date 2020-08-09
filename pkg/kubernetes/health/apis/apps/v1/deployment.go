@@ -21,10 +21,11 @@ package v1
 import (
 	"fmt"
 
-	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 )
 
 const (

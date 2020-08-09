@@ -71,12 +71,14 @@ func IsTerminal(i interface{}) bool {
 	return terminal
 }
 
-//// Safe invokes the provided function and will attempt to ensure that when the
-//// function returns (or a termination signal is sent) that the terminal state
-//// is reset to the condition it was in prior to the function being invoked. If
-//// t.Raw is true the terminal will be put into raw mode prior to calling the function.
-//// If the input file descriptor is not a TTY and TryDev is true, the /dev/tty file
-//// will be opened (if available).
+// Safe invokes the provided function and will attempt to ensure that when the
+// function returns (or a termination signal is sent) that the terminal state
+// is reset to the condition it was in prior to the function being invoked. If
+// t.Raw is true the terminal will be put into raw mode prior to calling the function.
+// If the input file descriptor is not a TTY and TryDev is true, the /dev/tty file
+// will be opened (if available).
+
+//nolint:gocritic
 //func (t TTY) Safe(fn SafeFunc) error {
 //	inFd, isTerminal := term.GetFdInfo(t.In)
 //

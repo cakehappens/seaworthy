@@ -8,11 +8,12 @@ import (
 	"os"
 	"strings"
 
-	pkgerrors "github.com/cakehappens/seaworthy/pkg/errors"
-	"github.com/cakehappens/seaworthy/pkg/util/sh"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	pkgerrors "github.com/cakehappens/seaworthy/pkg/errors"
+	"github.com/cakehappens/seaworthy/pkg/util/sh"
 )
 
 const resourcesFromBytesErrorFmt = "failed to convert output to resource list: %w"
@@ -117,8 +118,7 @@ func GetEvents(ctx context.Context, resourceUID string, options ...EventerOption
 	fieldSelectors = append(fieldSelectors, fmt.Sprintf("involvedObject.uid=%s", resourceUID))
 
 	args = append(args, "--field-selector", strings.Join(fieldSelectors, ","))
-	args = append(args, "--sort-by", "lastTimestamp")
-	args = append(args, "--output", "json")
+	args = append(args, "--sort-by", "lastTimestamp", "--output", "json")
 
 	objs, err := opts.rawResourcer(ctx, args...)
 	if err != nil {

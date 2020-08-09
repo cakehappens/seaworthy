@@ -7,7 +7,6 @@ require (
 	github.com/golangci/golangci-lint v1.30.0
 	github.com/gookit/color v1.2.7
 	github.com/goreleaser/goreleaser v0.141.0
-	github.com/kisielk/errcheck v1.2.0
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.0
 	github.com/moby/term v0.0.0-20200611042045-63b9a826fb74
@@ -20,7 +19,6 @@ require (
 	golang.org/x/sys v0.0.0-20200808120158-1030fc2bf1d9
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	gotest.tools/gotestsum v0.4.0
-	honnef.co/go/tools v0.0.1-2020.1.4
 	k8s.io/api v0.18.6
 	k8s.io/apimachinery v0.18.6
 	k8s.io/client-go v0.18.6

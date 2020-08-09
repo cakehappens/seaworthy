@@ -21,10 +21,11 @@ package v1beta1
 import (
 	"fmt"
 
-	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	extv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/client-go/kubernetes/scheme"
+
+	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 )
 
 const (
@@ -44,7 +45,7 @@ func IngressHealth(obj unstructured.Unstructured) (health.Status, error) {
 		}, err
 	}
 
-	if len(ingress.Status.LoadBalancer.Ingress) <= 0 {
+	if len(ingress.Status.LoadBalancer.Ingress) == 0 {
 		return health.Status{
 			Code:    health.Progressing,
 			Message: "Working on it...",

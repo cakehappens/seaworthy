@@ -4,8 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 )
 
 func TestIngressHealth(t *testing.T) {

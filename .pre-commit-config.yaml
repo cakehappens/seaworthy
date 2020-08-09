@@ -18,15 +18,8 @@ repos:
 - repo: git://github.com/Bahjat/pre-commit-golang
   rev: master
   hooks:
-  - id: go-fmt-import
-  - id: go-vet
-    exclude: "^scripts/tools.go"
-  - id: go-lint
-  - id: go-unit-tests
-    exclude: "^scripts/tools.go"
   - id: gofumpt # requires github.com/mvdan/gofumpt
-  - id: go-err-check # requires github.com/kisielk/errcheck
-    exclude: "^scripts/tools.go"
-  - id: go-static-check # install https://staticcheck.io/docs/
-    exclude: "^scripts/tools.go"
-  - id: golangci-lint # requires github.com/golangci/golangci-lint
+- repo: git://github.com/golangci/golangci-lint
+  rev: master
+  hooks:
+  - id: golangci-lint

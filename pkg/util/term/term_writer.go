@@ -31,6 +31,15 @@ type wordWrapWriter struct {
 	writer io.Writer
 }
 
+const (
+	// TermWidthXL corresponds to 120 characters, or a fairly wide terminal
+	TermWidthXL = 120
+	// TermWidthL corresponds to 100 characters, a moderately wide terminal
+	TermWidthL = 100
+	// TermWidthM corresponds to 80 characters, a smallish terminal
+	TermWidthM = 80
+)
+
 // NewResponsiveWriter creates a Writer that detects the column width of the
 // terminal we are in, and adjusts every line width to fit and use recommended
 // terminal sizes for better readability. Does proper word wrapping automatically.
@@ -56,12 +65,12 @@ func NewResponsiveWriter(w io.Writer) io.Writer {
 
 	var limit uint
 	switch {
-	case terminalSize.Width >= 120:
-		limit = 120
-	case terminalSize.Width >= 100:
-		limit = 100
-	case terminalSize.Width >= 80:
-		limit = 80
+	case terminalSize.Width >= TermWidthXL:
+		limit = TermWidthXL
+	case terminalSize.Width >= TermWidthL:
+		limit = TermWidthL
+	case terminalSize.Width >= TermWidthM:
+		limit = TermWidthM
 	}
 
 	return NewWordWrapWriter(w, limit)
