@@ -23,6 +23,5 @@ require (
 	k8s.io/apimachinery v0.18.6
 	k8s.io/client-go v0.18.6
 	k8s.io/kubectl v0.18.6
-	mvdan.cc/gofumpt v0.0.0-20200709182408-4fd085cb6d5f
 	sigs.k8s.io/yaml v1.2.0
 )

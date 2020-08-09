@@ -15,10 +15,6 @@ repos:
   # ensure files that should be updated/modify/generated have been committed
   # - id: git-dirty
   - id: shellcheck
-- repo: git://github.com/Bahjat/pre-commit-golang
-  rev: master
-  hooks:
-  - id: gofumpt # requires github.com/mvdan/gofumpt
 - repo: git://github.com/golangci/golangci-lint
   rev: master
   hooks:
