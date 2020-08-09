@@ -143,7 +143,7 @@ func (s *sizeQueue) Next() *TerminalSize {
 	return &size
 }
 
-// stop stops the background goroutine that is monitoring for terminal resizes.
-func (s *sizeQueue) stop() {
-	close(s.stopResizing)
-}
+//// stop stops the background goroutine that is monitoring for terminal resizes.
+//func (s *sizeQueue) stop() {
+//	close(s.stopResizing)
+//}

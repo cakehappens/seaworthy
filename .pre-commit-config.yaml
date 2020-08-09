@@ -20,16 +20,16 @@ repos:
   hooks:
   - id: go-fmt-import
   - id: go-vet
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"
   - id: go-lint
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"
   - id: go-unit-tests
     exclude: "^scripts/tools.go"
   - id: gofumpt # requires github.com/mvdan/gofumpt
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"
   - id: go-err-check # requires github.com/kisielk/errcheck
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"
   - id: go-static-check # install https://staticcheck.io/docs/
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"
   - id: golangci-lint # requires github.com/golangci/golangci-lint
-    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+    exclude: "^scripts/tools.go"

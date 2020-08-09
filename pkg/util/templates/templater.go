@@ -31,10 +31,12 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
+// FlagExposer exposes flags! Fancy that
 type FlagExposer interface {
 	ExposeFlags(cmd *cobra.Command, flags ...string) FlagExposer
 }
 
+// ActsAsRootCommand defines which command is the "root" command for groups
 func ActsAsRootCommand(cmd *cobra.Command, filters []string, groups ...CommandGroup) FlagExposer {
 	if cmd == nil {
 		panic("nil root command")
@@ -53,6 +55,8 @@ func ActsAsRootCommand(cmd *cobra.Command, filters []string, groups ...CommandGr
 	return templater
 }
 
+// UseOptionsTemplates docs to be written
+// TODO: write UseOptionsTemplates docs
 func UseOptionsTemplates(cmd *cobra.Command) {
 	templater := &templater{
 		UsageTemplate: OptionsUsageTemplate(),
@@ -70,47 +74,55 @@ type templater struct {
 	Filtered []string
 }
 
-func (templater *templater) FlagErrorFunc(exposedFlags ...string) func(*cobra.Command, error) error {
+// FlagErrorFunc docs to be written
+// TODO: write FlagErrorFunc docs
+func (t *templater) FlagErrorFunc(exposedFlags ...string) func(*cobra.Command, error) error {
 	return func(c *cobra.Command, err error) error {
 		c.SilenceUsage = true
 		switch c.CalledAs() {
 		case "options":
-			return fmt.Errorf("%s\nRun '%s' without flags.", err, c.CommandPath())
+			return fmt.Errorf("%s\nRun '%s' without flags", err, c.CommandPath())
 		default:
-			return fmt.Errorf("%s\nSee '%s --help' for usage.", err, c.CommandPath())
+			return fmt.Errorf("%s\nSee '%s --help' for usage", err, c.CommandPath())
 		}
 	}
 }
 
-func (templater *templater) ExposeFlags(cmd *cobra.Command, flags ...string) FlagExposer {
-	cmd.SetUsageFunc(templater.UsageFunc(flags...))
-	return templater
+// ExposeFlags docs to be written
+// TODO: write ExposeFlags docs
+func (t *templater) ExposeFlags(cmd *cobra.Command, flags ...string) FlagExposer {
+	cmd.SetUsageFunc(t.UsageFunc(flags...))
+	return t
 }
 
-func (templater *templater) HelpFunc() func(*cobra.Command, []string) {
+// HelpFunc docs to be written
+// TODO: write HelpFunc docs
+func (t *templater) HelpFunc() func(*cobra.Command, []string) {
 	return func(c *cobra.Command, s []string) {
-		t := template.New("help")
-		t.Funcs(templater.templateFuncs())
-		template.Must(t.Parse(templater.HelpTemplate))
+		tmpl := template.New("help")
+		tmpl.Funcs(t.templateFuncs())
+		template.Must(tmpl.Parse(t.HelpTemplate))
 		out := term.NewResponsiveWriter(c.OutOrStdout())
-		err := t.Execute(out, c)
+		err := tmpl.Execute(out, c)
 		if err != nil {
 			c.Println(err)
 		}
 	}
 }
 
-func (templater *templater) UsageFunc(exposedFlags ...string) func(*cobra.Command) error {
+// UsageFunc docs to be written
+// TODO: write UsageFunc docs
+func (t *templater) UsageFunc(exposedFlags ...string) func(*cobra.Command) error {
 	return func(c *cobra.Command) error {
-		t := template.New("usage")
-		t.Funcs(templater.templateFuncs(exposedFlags...))
-		template.Must(t.Parse(templater.UsageTemplate))
+		tmpl := template.New("usage")
+		tmpl.Funcs(t.templateFuncs(exposedFlags...))
+		template.Must(tmpl.Parse(t.UsageTemplate))
 		out := term.NewResponsiveWriter(c.OutOrStderr())
-		return t.Execute(out, c)
+		return tmpl.Execute(out, c)
 	}
 }
 
-func (templater *templater) templateFuncs(exposedFlags ...string) template.FuncMap {
+func (t *templater) templateFuncs(exposedFlags ...string) template.FuncMap {
 	return template.FuncMap{
 		"trim":                strings.TrimSpace,
 		"trimRight":           func(s string) string { return strings.TrimRightFunc(s, unicode.IsSpace) },
@@ -122,12 +134,12 @@ func (templater *templater) templateFuncs(exposedFlags ...string) template.FuncM
 		"flagsNotIntersected": flagsNotIntersected,
 		"visibleFlags":        visibleFlags,
 		"flagsUsages":         flagsUsages,
-		"cmdGroups":           templater.cmdGroups,
-		"cmdGroupsString":     templater.cmdGroupsString,
-		"rootCmd":             templater.rootCmdName,
-		"isRootCmd":           templater.isRootCmd,
-		"optionsCmdFor":       templater.optionsCmdFor,
-		"usageLine":           templater.usageLine,
+		"cmdGroups":           t.cmdGroups,
+		"cmdGroupsString":     t.cmdGroupsString,
+		"rootCmd":             t.rootCmdName,
+		"isRootCmd":           t.isRootCmd,
+		"optionsCmdFor":       t.optionsCmdFor,
+		"usageLine":           t.usageLine,
 		"exposed": func(c *cobra.Command) *flag.FlagSet {
 			exposed := flag.NewFlagSet("exposed", flag.ContinueOnError)
 			if len(exposedFlags) > 0 {
@@ -142,10 +154,10 @@ func (templater *templater) templateFuncs(exposedFlags ...string) template.FuncM
 	}
 }
 
-func (templater *templater) cmdGroups(c *cobra.Command, all []*cobra.Command) []CommandGroup {
-	if len(templater.CommandGroups) > 0 && c == templater.RootCmd {
-		all = filter(all, templater.Filtered...)
-		return AddAdditionalCommands(templater.CommandGroups, "Other Commands:", all)
+func (t *templater) cmdGroups(c *cobra.Command, all []*cobra.Command) []CommandGroup {
+	if len(t.CommandGroups) > 0 && c == t.RootCmd {
+		all = filter(all, t.Filtered...)
+		return AddAdditionalCommands(t.CommandGroups, "Other Commands:", all)
 	}
 	all = filter(all, "options")
 	return []CommandGroup{
