@@ -28,7 +28,7 @@ jobs:
         go mod download
     - name: Run Unit tests
       run: |
-        go test -race -covermode atomic -coverprofile=coverage.out ./...
+        go test -race -covermode atomic -coverprofile coverage.out ./...
     - name: Send coverage
       uses: shogo82148/actions-goveralls@v1
       with:
