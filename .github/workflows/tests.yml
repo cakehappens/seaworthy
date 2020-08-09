@@ -33,7 +33,7 @@ jobs:
       uses: shogo82148/actions-goveralls@v1
       with:
         path-to-profile: coverage.out
-  precommit:
+  linting:
     runs-on: ubuntu-latest
     steps:
     - name: Install Go
