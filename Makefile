@@ -23,12 +23,13 @@ vet:
 
 .PHONY: build
 build: clean
-	go build -o ./seaworthy ./cmd/seaworthy
-	chmod +x ./seaworthy
+	mkdir -p ./dist
+	go build -o ./dist/seaworthy ./cmd/seaworthy
+	chmod +x ./dist/seaworthy
 
 .PHONY: clean
 clean:
-	rm -f ./seaworthy
+	rm -fr ./dist
 
 .PHONY: test
 test:
@@ -45,3 +46,8 @@ pre-commit.install:
 
 pre-commit.run:
 	pre-commit run --all-files
+
+release: clean
+	@echo "--skip-publish, as we will use github actions to do this"
+	git-chglog -o CHANGELOG.md
+	goreleaser --snapshot --skip-publish --rm-dist --release-notes CHANGELOG.md

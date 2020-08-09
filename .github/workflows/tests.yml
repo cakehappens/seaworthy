@@ -2,14 +2,14 @@ name: tests
 on:
   push:
     paths:
-    - '**.go'
-    - 'go.mod'
-    - 'go.sum'
-    - '.github/workflows/tests.yml'
-    - 'pkg/**'
-    - 'cmd/**'
-    - '.pre-commit-config.yaml'
-    - '.golangci.yml'
+      - '**.go'
+      - 'go.mod'
+      - 'go.sum'
+      - '.github/workflows/tests.yml'
+      - 'pkg/**'
+      - 'cmd/**'
+      - '.pre-commit-config.yaml'
+      - '.golangci.yml'
   pull_request: {}
 jobs:
   test:
@@ -19,33 +19,33 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go-version }}
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        make dl
-    - name: Run Unit tests
-      run: |
-        make cover
-    - name: Send coverage
-      uses: shogo82148/actions-goveralls@v1
-      with:
-        path-to-profile: coverage.out
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          make dl
+      - name: Run Unit tests
+        run: |
+          make cover
+      - name: Send coverage
+        uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: coverage.out
   linting:
     runs-on: ubuntu-latest
     steps:
-    - name: Install Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.14.x
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - name: Install tools
-      run: |
-        make tools
-    - uses: actions/setup-python@v1
-    - uses: pre-commit/action@v2.0.0
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.14.x
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install tools
+        run: |
+          make tools
+      - uses: actions/setup-python@v1
+      - uses: pre-commit/action@v2.0.0

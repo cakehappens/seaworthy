@@ -21,6 +21,13 @@ import (
 	_ "github.com/cakehappens/seaworthy/pkg/kubernetes/health/install"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+	builtBy = "unknown"
+)
+
 const binaryName = "seaworthy"
 
 // NewSeaworthyCommand returns the root command for the CLI
@@ -33,7 +40,7 @@ func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 				return nil
 			}
 
-			fmt.Println("main")
+			fmt.Printf("seaworthy %s, commit %s, built at %s by %s", version, commit, date, builtBy)
 
 			fmt.Printf("running: %s\n", args)
 

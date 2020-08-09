@@ -1,0 +1,31 @@
+# Make sure to check the documentation at http://goreleaser.com
+builds:
+- env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - windows
+    - darwin
+  goarch:
+    - amd64
+  id: seaworthy
+  main: ./cmd/seaworthy
+  binary: seaworthy
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+#signs:
+#  - cmd: gpg2
+#    artifacts: all
+#    args: ["-u", "1C08DB44DEC7CAFC", "--output", "${signature}", "--detach-sign", "${artifact}"]
+release:
+  prerelease: auto
+  draft: true
+changelog:
+  skip: true
