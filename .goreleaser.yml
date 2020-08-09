@@ -27,5 +27,3 @@ checksum:
 release:
   prerelease: auto
   draft: true
-changelog:
-  skip: true
