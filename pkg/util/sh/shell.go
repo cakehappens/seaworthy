@@ -8,6 +8,7 @@ import (
 	"os/exec"
 )
 
+// RunOptions is part of the functional API for Run
 type RunOptions struct {
 	Args   []string
 	Env    map[string]string
@@ -16,6 +17,7 @@ type RunOptions struct {
 	Stdin  io.Reader
 }
 
+// RunOption is part of the functional API for Run
 type RunOption func(o *RunOptions)
 
 // Run provides a functional API for running a process
@@ -45,21 +47,19 @@ func Run(ctx context.Context, cmd string, options ...RunOption) (int, error) {
 	c := exec.CommandContext(ctx, cmd, runOpts.Args...)
 	c.Env = cmdEnv
 
-	//fmt.Printf("cmd: %s %s\n", cmd, strings.Join(runOpts.Args, " "))
+	// fmt.Printf("cmd: %s %s\n", cmd, strings.Join(runOpts.Args, " "))
 
 	c.Stdout = runOpts.Stdout
 	c.Stderr = runOpts.Stderr
 	c.Stdin = runOpts.Stdin
 
 	err := c.Run()
-
-	if err != nil {
-		if _, ok := err.(*exec.ExitError); ok {
-			return c.ProcessState.ExitCode(), nil
-		}
+	if _, ok := err.(*exec.ExitError); ok {
+		return c.ProcessState.ExitCode(), nil
 	}
 
 	return c.ProcessState.ExitCode(), err
 }
 
+// CmdRunner describes the signature of the Run function
 type CmdRunner func(ctx context.Context, cmd string, options ...RunOption) (int, error)

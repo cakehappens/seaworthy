@@ -6,12 +6,16 @@ import (
 )
 
 const (
-	FlagDryRun         = "dry-run"
-	FlagContext        = "context"
+	// FlagDryRun is for --dry-run
+	FlagDryRun = "dry-run"
+	// FlagContext is for --context passed to kubectl
+	FlagContext = "context"
+	// FlagKubeConfigFile is for --kubeconfig passed to kubectl
 	FlagKubeConfigFile = "kubeconfig"
-	FlagVerbosity      = "verbose"
+	// FlagVerbosity is for --verbose
+	FlagVerbosity = "verbose"
 )
 
+// BindGlobalFlags binds global (reusable flags) to a particular flagset, such as from a subcommand
 func BindGlobalFlags(v *viper.Viper, flags *pflag.FlagSet) {
-
 }

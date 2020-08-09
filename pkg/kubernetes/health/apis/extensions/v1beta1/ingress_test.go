@@ -1,10 +1,11 @@
 package v1beta1
 
 import (
-	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"reflect"
 	"testing"
+
+	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
 func TestIngressHealth(t *testing.T) {

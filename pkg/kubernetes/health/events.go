@@ -1,12 +1,14 @@
 package health
 
 import (
+	"time"
+
 	"github.com/ghostsquad/go-timejumper"
 	corev1 "k8s.io/api/core/v1"
-	"time"
 )
 
 const (
+	// EventTypeWarning is for Warning events
 	EventTypeWarning = "Warning"
 )
 
@@ -27,10 +29,12 @@ func TrailingWarningEvent(events []corev1.Event) []corev1.Event {
 	return warningEvents
 }
 
+// WarningEventAgeOptions provide options for finding events
 type WarningEventAgeOptions struct {
 	clock timejumper.Clock
 }
 
+// WarningEventAgeOption provides for a functional API for func WarningEventsLessThanAge
 type WarningEventAgeOption func(options *WarningEventAgeOptions)
 
 // WarningEventsLessThanAge returns all "Warning" type events that have happened since the given time (1 second minimum resolution)

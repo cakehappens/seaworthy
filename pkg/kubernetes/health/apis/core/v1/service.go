@@ -2,12 +2,14 @@ package v1
 
 import (
 	"fmt"
+
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/kubectl/pkg/scheme"
 )
 
+// ServiceHealth checks the health of a Service
 func ServiceHealth(obj *unstructured.Unstructured) (health.Status, error) {
 	service := &corev1.Service{}
 	err := scheme.Scheme.Convert(obj, service, nil)
@@ -22,11 +24,11 @@ func ServiceHealth(obj *unstructured.Unstructured) (health.Status, error) {
 	if service.Spec.Type == corev1.ServiceTypeLoadBalancer {
 		if len(service.Status.LoadBalancer.Ingress) > 0 {
 			return health.NewHealthyHealthStatus(), nil
-		} else {
-			return health.Status{
-				Code: health.Progressing,
-			}, nil
 		}
+
+		return health.Status{
+			Code: health.Progressing,
+		}, nil
 	}
 	return health.Status{
 		Code: health.Unknown,

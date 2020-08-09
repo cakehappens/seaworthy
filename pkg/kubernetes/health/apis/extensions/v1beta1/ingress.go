@@ -20,6 +20,7 @@ package v1beta1
 
 import (
 	"fmt"
+
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	extv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -27,9 +28,11 @@ import (
 )
 
 const (
+	// IngressKind for Ingress
 	IngressKind = "Ingress"
 )
 
+// IngressHealth checks the health of an Ingress
 func IngressHealth(obj unstructured.Unstructured) (health.Status, error) {
 	ingress := &extv1beta1.Ingress{}
 	err := scheme.Scheme.Convert(&obj, ingress, nil)

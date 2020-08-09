@@ -4,14 +4,15 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"os"
+	"strings"
+
 	pkgerrors "github.com/cakehappens/seaworthy/pkg/errors"
 	"github.com/cakehappens/seaworthy/pkg/util/sh"
-	"io"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
-	"os"
-	"strings"
 )
 
 const resourcesFromBytesErrorFmt = "failed to convert output to resource list: %w"
@@ -20,7 +21,6 @@ func resourcesFromBytes(b []byte) ([]unstructured.Unstructured, error) {
 	obj := &unstructured.Unstructured{}
 
 	err := obj.UnmarshalJSON(b)
-
 	if err != nil {
 		if err != io.EOF {
 			err = fmt.Errorf("json unmarshal: %w", err)
@@ -73,10 +73,12 @@ func kubectlRawResourcer(ctx context.Context, cmdRunner sh.CmdRunner, args ...st
 	return resourcesFromBytes(stdout)
 }
 
+// KubeCtlRawResourcer uses the kubectl binary to retrieve resources
 func KubeCtlRawResourcer(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
 	return kubectlRawResourcer(ctx, sh.Run, args...)
 }
 
+// GetResources returns a list of unstructured resources. You must know what you asked for, and convert to actual types
 func GetResources(ctx context.Context, options ...ResourcerOption) ([]unstructured.Unstructured, error) {
 	opts := &ResourcerOptions{
 		rawResourcer: KubeCtlRawResourcer,
@@ -96,7 +98,8 @@ func GetResources(ctx context.Context, options ...ResourcerOption) ([]unstructur
 	return opts.rawResourcer(ctx, args...)
 }
 
-func GetEvents(ctx context.Context, resourceUid string, options ...EventerOption) ([]corev1.Event, error) {
+// GetEvents returns a list of kubernetes Events
+func GetEvents(ctx context.Context, resourceUID string, options ...EventerOption) ([]corev1.Event, error) {
 	opts := &EventerOptions{
 		rawResourcer: KubeCtlRawResourcer,
 	}
@@ -111,14 +114,13 @@ func GetEvents(ctx context.Context, resourceUid string, options ...EventerOption
 
 	var fieldSelectors []string
 
-	fieldSelectors = append(fieldSelectors, fmt.Sprintf("involvedObject.uid=%s", resourceUid))
+	fieldSelectors = append(fieldSelectors, fmt.Sprintf("involvedObject.uid=%s", resourceUID))
 
 	args = append(args, "--field-selector", strings.Join(fieldSelectors, ","))
 	args = append(args, "--sort-by", "lastTimestamp")
 	args = append(args, "--output", "json")
 
 	objs, err := opts.rawResourcer(ctx, args...)
-
 	if err != nil {
 		return nil, err
 	}

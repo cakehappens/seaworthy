@@ -1,8 +1,9 @@
 package verify
 
 import (
-	"errors"
 	"fmt"
+	"time"
+
 	"github.com/cakehappens/seaworthy/pkg/clioptions"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
@@ -10,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/theckman/yacspin"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"time"
 )
 
+// New creates a new Verify cobra command
 func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "verify (-f FILENAME | TYPE [NAME])",
@@ -50,19 +51,21 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 			}
 
 			spinner, err := yacspin.New(cfg)
+			if err != nil {
+				panic(err)
+			}
 
-			spinner.Start()
+			_ = spinner.Start()
 
 			err = <-errChan
 			resources := <-resourceChan
 
 			if err != nil {
-				spinner.StopFail()
-				// fmt.Fprintf(streams.ErrOut, "%s", err)
+				_ = spinner.StopFail()
 				return
-			} else {
-				spinner.Stop()
 			}
+
+			_ = spinner.Stop()
 
 			const resultMessageFormat = "%s %s: %s - %s\n"
 
@@ -71,19 +74,19 @@ func New(streams clioptions.IOStreams, resourcer kubernetes.Resourcer) *cobra.Co
 
 				switch code := status.Code; code {
 				case health.Healthy:
-					fmt.Fprintf(streams.Out, resultMessageFormat, color.Green.Sprint("✓"), r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, color.Green.Sprint("✓"), r.GetName(), code, status.Message)
 				case health.Progressing:
-					fmt.Fprintf(streams.Out, resultMessageFormat, "🔄️ ", r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "🔄️ ", r.GetName(), code, status.Message)
 				case health.Unsupported:
-					fmt.Fprintf(streams.Out, resultMessageFormat, "⚠️ ", r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "⚠️ ", r.GetName(), code, status.Message)
 				case health.Unknown:
-					fmt.Fprintf(streams.Out, resultMessageFormat, "?️ ", r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "?️ ", r.GetName(), code, status.Message)
 				case health.Degraded:
-					fmt.Fprintf(streams.Out, resultMessageFormat, "🔻️ ", r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "🔻️ ", r.GetName(), code, status.Message)
 				case health.Missing:
-					fmt.Fprintf(streams.Out, resultMessageFormat, "👤️ ", r.GetName(), code, status.Message)
+					_, _ = fmt.Fprintf(streams.Out, resultMessageFormat, "👤️ ", r.GetName(), code, status.Message)
 				default:
-					panic(errors.New(fmt.Sprintf("unknown status code: %s", code)))
+					panic(fmt.Errorf("unknown status code: %s", code))
 				}
 			}
 		},

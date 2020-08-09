@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"context"
+
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
@@ -9,6 +10,7 @@ import (
 // resourcer describes how to get the resources args and then returns the resources as unstructured objects
 type rawResourcer func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error)
 
+// ResourcerOptions is part of the functional API for Resourcer
 type ResourcerOptions struct {
 	// Name corresponds to `NAME` within `kubectl get TYPE NAME`
 	// Cannot be combined with Filename option
@@ -38,6 +40,7 @@ type ResourcerOptions struct {
 	rawResourcer
 }
 
+// GetCmdArgs is part of the functional API for Resourcer
 func (opts *ResourcerOptions) GetCmdArgs() []string {
 	var args []string
 
@@ -71,14 +74,19 @@ func (opts *ResourcerOptions) GetCmdArgs() []string {
 	return args
 }
 
+// ResourcerOption is part of the functional API for Resourcer
 type ResourcerOption func(opt *ResourcerOptions)
 
+// Resourcer should return kubernetes resources
 type Resourcer func(ctx context.Context, options ...ResourcerOption) ([]unstructured.Unstructured, error)
 
+// EventerOptions is part of the functional API for Eventer
 type EventerOptions struct {
 	rawResourcer
 }
 
+// EventerOption is part of the functional API for Eventer
 type EventerOption func(option *EventerOptions)
 
+// Eventer should return kubernetes events
 type Eventer func(ctx context.Context, resource unstructured.Unstructured, options ...EventerOption) ([]corev1.Event, error)

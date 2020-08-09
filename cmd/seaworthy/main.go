@@ -2,8 +2,12 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
+	"io"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/cakehappens/seaworthy/pkg/clioptions"
 	cmdverify "github.com/cakehappens/seaworthy/pkg/cmd/verify"
 	"github.com/cakehappens/seaworthy/pkg/kubernetes"
@@ -11,10 +15,6 @@ import (
 	"github.com/gookit/color"
 	"github.com/oklog/run"
 	"github.com/spf13/cobra"
-	"io"
-	"os"
-	"os/signal"
-	"syscall"
 
 	// registers health checks
 	_ "github.com/cakehappens/seaworthy/pkg/kubernetes/health/install"
@@ -22,6 +22,7 @@ import (
 
 const binaryName = "seaworthy"
 
+// NewSeaworthyCommand returns the root command for the CLI
 func NewSeaworthyCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: binaryName,
@@ -96,7 +97,7 @@ func createSignalWatcher(ctx context.Context, cancelInterruptChan <-chan struct{
 		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 		select {
 		case sig := <-c:
-			err := errors.New(fmt.Sprintf("received signal %s", sig))
+			err := fmt.Errorf("received signal %s", sig)
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			signal.Stop(c)
 			cancel()

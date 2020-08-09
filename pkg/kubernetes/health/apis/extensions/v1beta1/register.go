@@ -5,7 +5,9 @@ import (
 )
 
 const (
+	// GroupName is the K8s API Group
 	GroupName = extv1beta.GroupName
+	// Version is the K8s API Version
 	// Unfortunately this isn't a constant in the upstream repo
 	Version = "v1beta1"
 )

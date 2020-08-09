@@ -19,8 +19,9 @@ limitations under the License.
 package term
 
 import (
-	"github.com/moby/term"
 	"io"
+
+	"github.com/moby/term"
 
 	"k8s.io/kubectl/pkg/util/interrupt"
 )

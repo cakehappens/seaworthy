@@ -20,6 +20,7 @@ package v1
 
 import (
 	"fmt"
+
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -27,9 +28,11 @@ import (
 )
 
 const (
+	// DeploymentKind for Deployment
 	DeploymentKind = "Deployment"
 )
 
+// DeploymentHealth checks the health of a Deployment
 func DeploymentHealth(obj unstructured.Unstructured) (health.Status, error) {
 	var err error
 

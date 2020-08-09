@@ -1,11 +1,11 @@
 .PHONY: download
-download:
+dl:
 	@echo Download go.mod dependencies
 	@go mod download
 
 # https://marcofranssen.nl/manage-go-tools-via-go-modules/
 .PHONY: install-tool
-install-tools: download
+tools: dl
 	@echo Installing tools from scripts/tools.go
 	@cat scripts/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
 
@@ -37,3 +37,11 @@ test:
 .PHONY: cover
 cover:
 	go test -race -covermode atomic -coverprofile coverage.out ./...
+
+# PRE-COMMIT & GITHOOKS
+# ---------------------
+pre-commit.install:
+	pre-commit install --install-hooks
+
+pre-commit.run:
+	pre-commit run --all-files

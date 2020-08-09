@@ -20,6 +20,7 @@ package term
 
 import (
 	"fmt"
+
 	"github.com/moby/term"
 	"k8s.io/apimachinery/pkg/util/runtime"
 )

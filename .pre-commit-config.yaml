@@ -1,0 +1,35 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v3.2.0
+  hooks:
+  - id: check-yaml
+  - id: sort-simple-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: mixed-line-ending
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: "2.1.4"
+  hooks:
+  # - id: git-check
+  # Figure out how to run this in CI build in order to
+  # ensure files that should be updated/modify/generated have been committed
+  # - id: git-dirty
+  - id: shellcheck
+- repo: git://github.com/Bahjat/pre-commit-golang
+  rev: master
+  hooks:
+  - id: go-fmt-import
+  - id: go-vet
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+  - id: go-lint
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+  - id: go-unit-tests
+    exclude: "^scripts/tools.go"
+  - id: gofumpt # requires github.com/mvdan/gofumpt
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+  - id: go-err-check # requires github.com/kisielk/errcheck
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+  - id: go-static-check # install https://staticcheck.io/docs/
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"
+  - id: golangci-lint # requires github.com/golangci/golangci-lint
+    exclude: "^scripts/tools.go|pkg/util/templates|pkg/util/term"

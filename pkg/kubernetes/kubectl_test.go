@@ -2,14 +2,15 @@ package kubernetes
 
 import (
 	"context"
+	"io/ioutil"
+	"reflect"
+	"testing"
+
 	"github.com/cakehappens/seaworthy/pkg/util/sh"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"reflect"
 	"sigs.k8s.io/yaml"
-	"testing"
 )
 
 func loadTestResource(yamlPath string) *unstructured.Unstructured {
@@ -27,7 +28,7 @@ func loadTestResource(yamlPath string) *unstructured.Unstructured {
 
 func TestGetEvents(t *testing.T) {
 	t.Run("valid args provided", func(t *testing.T) {
-		expectedUid := "abc123"
+		expectedUID := "abc123"
 		expectedArgs := []string{
 			"get",
 			"events",
@@ -39,7 +40,7 @@ func TestGetEvents(t *testing.T) {
 			"json",
 		}
 
-		_, _ = GetEvents(context.Background(), expectedUid, func(option *EventerOptions) {
+		_, _ = GetEvents(context.Background(), expectedUID, func(option *EventerOptions) {
 			option.rawResourcer = func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
 				assert.Equal(t, expectedArgs, args)
 				return nil, nil
@@ -49,7 +50,7 @@ func TestGetEvents(t *testing.T) {
 
 	type args struct {
 		ctx         context.Context
-		resourceUid string
+		resourceUID string
 		options     []EventerOption
 	}
 	type want struct {
@@ -68,7 +69,7 @@ func TestGetEvents(t *testing.T) {
 			name: "given many events__expect list returned",
 			args: args{
 				ctx:         context.Background(),
-				resourceUid: "abc123",
+				resourceUID: "abc123",
 				options: []EventerOption{
 					func(option *EventerOptions) {
 						option.rawResourcer = func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
@@ -108,7 +109,7 @@ func TestGetEvents(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := GetEvents(tt.args.ctx, tt.args.resourceUid, tt.args.options...)
+			got, err := GetEvents(tt.args.ctx, tt.args.resourceUID, tt.args.options...)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetEvents() error = %v, wantErr %v", err, tt.wantErr)
 				return
