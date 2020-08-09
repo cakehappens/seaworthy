@@ -4,11 +4,26 @@ import (
 	"context"
 	"github.com/cakehappens/seaworthy/pkg/util/sh"
 	"github.com/stretchr/testify/assert"
-	corev1 "k8s.io/api/core/v1"
+	"github.com/stretchr/testify/require"
+	"io/ioutil"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"reflect"
+	"sigs.k8s.io/yaml"
 	"testing"
 )
+
+func loadTestResource(yamlPath string) *unstructured.Unstructured {
+	yamlBytes, err := ioutil.ReadFile(yamlPath)
+	if err != nil {
+		panic(err)
+	}
+	var obj unstructured.Unstructured
+	err = yaml.Unmarshal(yamlBytes, &obj)
+	if err != nil {
+		panic(err)
+	}
+	return &obj
+}
 
 func TestGetEvents(t *testing.T) {
 	t.Run("valid args provided", func(t *testing.T) {
@@ -37,26 +52,58 @@ func TestGetEvents(t *testing.T) {
 		resourceUid string
 		options     []EventerOption
 	}
+	type want struct {
+		apiVersion string
+		kind       string
+		name       string
+		uid        string
+	}
 	tests := []struct {
-		name        string
-		args        args
-		want        []corev1.Event
-		wantErr     bool
-		argAsserter func(t *testing.T, expected, actual []string)
+		name    string
+		args    args
+		wants   []want
+		wantErr bool
 	}{
 		{
-			name: "blah",
+			name: "given many events__expect list returned",
 			args: args{
 				ctx:         context.Background(),
 				resourceUid: "abc123",
 				options: []EventerOption{
 					func(option *EventerOptions) {
 						option.rawResourcer = func(ctx context.Context, args ...string) ([]unstructured.Unstructured, error) {
-							return nil, nil
+							obj := loadTestResource("./test_data/events_many.yml")
+							objLs, err := obj.ToList()
+							if err != nil {
+								panic(err)
+							}
+
+							return objLs.Items, nil
 						}
 					},
 				},
 			},
+			wants: []want{
+				{
+					apiVersion: "v1",
+					kind:       "Event",
+					name:       "ssm-agent.16293412df341d17",
+					uid:        "aa37e1c0-d938-11ea-9375-02ecadc8ef22",
+				},
+				{
+					apiVersion: "v1",
+					kind:       "Event",
+					name:       "ssm-agent.16293412e6b5bf59",
+					uid:        "aa4c1f84-d938-11ea-9375-02ecadc8ef33",
+				},
+				{
+					apiVersion: "v1",
+					kind:       "Event",
+					name:       "ssm-agent.16293412e6b5bf59",
+					uid:        "aa4c1f84-d938-11ea-9375-02ecadc8ef44",
+				},
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -66,8 +113,17 @@ func TestGetEvents(t *testing.T) {
 				t.Errorf("GetEvents() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetEvents() got = %v, want %v", got, tt.want)
+
+			require.Nil(t, err)
+			require.Equal(t, len(tt.wants), len(got))
+
+			t.Logf("%+v", got)
+
+			for i, w := range tt.wants {
+				assert.Equal(t, w.name, got[i].Name)
+				assert.Equal(t, w.apiVersion, got[i].APIVersion)
+				assert.Equal(t, w.kind, got[i].Kind)
+				assert.Equal(t, w.uid, string(got[i].UID))
 			}
 		})
 	}

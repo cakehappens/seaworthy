@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
+items:
+  - apiVersion: v1
+    count: 1
+    eventTime: null
+    firstTimestamp: "2020-08-08T05:33:18Z"
+    involvedObject:
+      apiVersion: apps/v1
+      kind: DaemonSet
+      name: ssm-agent
+      namespace: kube-system
+      resourceVersion: "593243589"
+      uid: f4b74f97-c546-11e9-a56d-022a98e98422
+    kind: Event
+    lastTimestamp: "2020-08-08T05:33:18Z"
+    message: 'Created pod: ssm-agent-8j5h6'
+    metadata:
+      creationTimestamp: "2020-08-08T05:33:18Z"
+      name: ssm-agent.16293412df341d17
+      namespace: kube-system
+      resourceVersion: "593244410"
+      selfLink: /api/v1/namespaces/kube-system/events/ssm-agent.16293412df341d17
+      uid: aa37e1c0-d938-11ea-9375-02ecadc8ef24
+    reason: SuccessfulCreate
+    reportingComponent: ""
+    reportingInstance: ""
+    source:
+      component: daemonset-controller
+    type: Normal

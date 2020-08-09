@@ -16,6 +16,9 @@
   <a href="https://github.com/cakehappens/seaworthy/actions">
     <img src="https://github.com/cakehappens/seaworthy/workflows/tests/badge.svg">
   </a>
+  <a href="https://coveralls.io/github/cakehappens/seaworthy?branch=main">
+    <img src="https://coveralls.io/repos/github/cakehappens/seaworthy/badge.svg?branch=main">
+  </a>
   <a href="https://pkg.go.dev/github.com/cakehappens/seaworthy">
     <img src="https://img.shields.io/badge/godoc-reference-5272B4.svg">
   </a>

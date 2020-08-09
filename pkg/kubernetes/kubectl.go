@@ -9,7 +9,7 @@ import (
 	"io"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/scheme"
+	"k8s.io/apimachinery/pkg/runtime"
 	"os"
 	"strings"
 )
@@ -129,9 +129,10 @@ func GetEvents(ctx context.Context, resourceUid string, options ...EventerOption
 	for _, obj := range objs {
 		event := &corev1.Event{}
 
-		err = scheme.Scheme.Convert(&obj, event, nil)
+		err = runtime.DefaultUnstructuredConverter.FromUnstructured(obj.Object, &event)
 		if err != nil {
 			errors.Add(err)
+		} else {
 			events = append(events, *event)
 		}
 	}

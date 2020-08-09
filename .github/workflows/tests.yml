@@ -6,6 +6,8 @@ on:
     - 'go.mod'
     - 'go.sum'
     - '.github/workflows/tests.yml'
+    - 'pkg/**'
+    - 'cmd/**'
   pull_request: {}
 jobs:
   test:
@@ -21,5 +23,13 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Test
-        run: go test ./...
+      - name: Install dependencies
+        run: |
+          go mod download
+      - name: Run Unit tests
+        run: |
+          go test -race -covermode atomic -coverprofile=coverage.out ./...
+     - name: Send coverage
+       uses: shogo82148/actions-goveralls@v1
+       with:
+         path-to-profile: coverage.out

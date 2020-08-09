@@ -16,4 +16,5 @@ vendor/
 
 tmp/
 
+# Built Binary
 /seaworthy

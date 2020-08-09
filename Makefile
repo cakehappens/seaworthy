@@ -1,6 +1,13 @@
-.PHONY: gen
-install-deps:
-	go install github.com/gotestyourself/gotestsum
+.PHONY: download
+download:
+	@echo Download go.mod dependencies
+	@go mod download
+
+# https://marcofranssen.nl/manage-go-tools-via-go-modules/
+.PHONY: install-tool
+install-tools: download
+	@echo Installing tools from scripts/tools.go
+	@cat scripts/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install %
 
 .PHONY: gen
 gen:
@@ -23,7 +30,10 @@ build: clean
 clean:
 	rm -f ./seaworthy
 
-.PHONY: clean
+.PHONY: test
 test:
-	gotestsum --format short-verbose ./...
+	gotestsum --format testname ./...
 
+.PHONY: cover
+cover:
+	go test -race -covermode atomic -coverprofile=coverage.out ./...

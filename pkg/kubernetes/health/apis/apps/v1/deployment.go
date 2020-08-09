@@ -23,7 +23,7 @@ import (
 	"github.com/cakehappens/seaworthy/pkg/kubernetes/health"
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/kubectl/pkg/scheme"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 const (
@@ -34,7 +34,7 @@ func DeploymentHealth(obj unstructured.Unstructured) (health.Status, error) {
 	var err error
 
 	deployment := &appsv1.Deployment{}
-	err = scheme.Scheme.Convert(&obj, deployment, nil)
+	err = runtime.DefaultUnstructuredConverter.FromUnstructured(obj.Object, &deployment)
 	if err != nil {
 		err = fmt.Errorf("failed to convert %T to %T: %w", obj, deployment, err)
 		return health.Status{
