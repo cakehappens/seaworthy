@@ -9,6 +9,7 @@ on:
     - 'pkg/**'
     - 'cmd/**'
     - '.pre-commit-config.yaml'
+    - '.golangci.yml'
   pull_request: {}
 jobs:
   test:
