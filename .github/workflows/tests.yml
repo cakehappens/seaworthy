@@ -8,6 +8,7 @@ on:
     - '.github/workflows/tests.yml'
     - 'pkg/**'
     - 'cmd/**'
+    - '.pre-commit-config.yaml'
   pull_request: {}
 jobs:
   test:
