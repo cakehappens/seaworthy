@@ -50,4 +50,4 @@ pre-commit.run:
 release: clean
 	@echo "--skip-publish, as we will use github actions to do this"
 	git-chglog -o CHANGELOG.md
-	goreleaser --snapshot --skip-publish --rm-dist --release-notes CHANGELOG.md
+	goreleaser --skip-publish --rm-dist --release-notes CHANGELOG.md

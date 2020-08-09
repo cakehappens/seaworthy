@@ -8,11 +8,10 @@
 
 <h4 align="center">Post-apply check to verify your K8s resources are <i>Seaworthy</i></h4>
 
-<!-- <a href="https://github.com/cakehappens/seaworthy/releases/">
-  <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg">
-</a> -->
-
 <p align="center">
+  <a href="https://github.com/cakehappens/seaworthy/releases/">
+    <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg">
+  </a>
   <a href="https://github.com/cakehappens/seaworthy/actions">
     <img src="https://github.com/cakehappens/seaworthy/workflows/tests/badge.svg">
   </a>
