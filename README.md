@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/cakehappens/seaworthy/releases/">
-    <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg">
+    <img src="https://img.shields.io/github/release/cakehappens/seaworthy.svg?include_prereleases">
   </a>
   <a href="https://github.com/cakehappens/seaworthy/actions">
     <img src="https://github.com/cakehappens/seaworthy/workflows/tests/badge.svg">
